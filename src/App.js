@@ -1,5 +1,10 @@
 import React, {useState}from 'react'
 import './App.css'
+import TodoForm from './components/TodoForm';
+import TodoList from './components/TodoList';
+
+// 50:00 MINS 
+
 
 const App = () => {
 
@@ -14,6 +19,22 @@ const App = () => {
   //THIS IS TO HANDLE SUBMIT
   const handleSubmit = (e) =>{
     e.preventDefault();
+    if (editID){
+      const editTodo = todos.find((i) => i.id=== editID);
+      const updatedTodo = todos.map(
+        (t) => t.id === editTodo.id
+        ?(t={id:t.id, todo})
+        :{id:t.id, todo:t.todo}
+      )
+      setTodos(updatedTodo);
+      setEditID(0);
+      setTodo('');
+      return
+
+    }
+
+
+
     if (todo !== ''){
       setTodos(
         [
@@ -47,41 +68,9 @@ const App = () => {
     <div className="App">
       <div className="container">
         <h1>Project Todo List</h1>
-        <form className='todoForm' onSubmit={handleSubmit}>
-          <input 
-            type="text" 
-            value={todo}
-            onChange={
-            (e)=>{
-              (setTodo(e.target.value))
-            }
-            }/>
-          <button type='submit'> {editID ? "Edit" : 'Submit'}</button>
-        </form>
+        <TodoForm handleSubmit={handleSubmit} todo={todo} setTodo={setTodo} editID={editID}/>
 
-        <ul className="todoUL">
-           {
-              todos.map((t) => (
-              <li className="singleTask">
-                <span className="todoName" key={t.id}>
-                {t.todo}
-                </span>
-
-                {/* EDIT BUTTON  */}
-                <button onClick={ () =>{updateTodoList(t.id)}
-                  
-                }>Edit</button>
-
-                {/* DELETE BUTTON */}
-                <button className="delBtn" onClick={
-                  () => {
-                    handleDelete(t.id)
-                  }
-                }>Delete</button>
-              </li>          
-              ))
-           }
-        </ul>
+        <TodoList todos = {todos}  updateTodoList = {updateTodoList} handleDelete ={handleDelete}/>
         
       </div>
     </div>
